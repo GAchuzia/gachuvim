@@ -13,6 +13,8 @@ map("n", "<leader>gg", function()
   end
   vim.cmd.tabnew()
   local win, buf = vim.api.nvim_get_current_win(), vim.api.nvim_get_current_buf()
+  -- Send Esc to LazyGit at once instead of waiting to see if it starts <Esc><Esc>.
+  vim.keymap.set("t", "<Esc>", "<Esc>", { buffer = buf, nowait = true })
   vim.fn.jobstart({ "lazygit" }, {
     term = true,
     cwd = root,
@@ -31,6 +33,23 @@ map("n", "<leader>gg", function()
   })
   vim.cmd.startinsert()
 end, { desc = "Git dashboard (LazyGit)" })
+map("n", "<leader>gw", function()
+  local paths = {}
+  for _, line in ipairs(vim.fn.systemlist({ "git", "worktree", "list", "--porcelain" })) do
+    local path = line:match("^worktree (.+)")
+    if path then
+      table.insert(paths, path)
+    end
+  end
+  if #paths == 0 then
+    return vim.notify("Use :cd to enter a Git repository first.", vim.log.levels.WARN)
+  end
+  vim.ui.select(paths, { prompt = "Worktree" }, function(path)
+    if path then
+      vim.cmd.tcd(path)
+    end
+  end)
+end, { desc = "Switch tab to worktree" })
 map("n", "<Esc>", "<cmd>nohlsearch<cr>", { desc = "Clear search highlight" })
 map("n", "<C-h>", "<C-w>h", { desc = "Go to left window" })
 map("n", "<C-j>", "<C-w>j", { desc = "Go to lower window" })
@@ -38,8 +57,6 @@ map("n", "<C-k>", "<C-w>k", { desc = "Go to upper window" })
 map("n", "<C-l>", "<C-w>l", { desc = "Go to right window" })
 map("n", "<leader>|", "<cmd>vsplit<cr>", { desc = "Split vertically" })
 map("n", "<leader>-", "<cmd>split<cr>", { desc = "Split horizontally" })
-map("n", "<S-h>", "<cmd>bprevious<cr>", { desc = "Previous buffer" })
-map("n", "<S-l>", "<cmd>bnext<cr>", { desc = "Next buffer" })
 map("n", "<leader>bd", "<cmd>bdelete<cr>", { desc = "Delete buffer" })
 map("v", "<", "<gv", { desc = "Indent left" })
 map("v", ">", ">gv", { desc = "Indent right" })

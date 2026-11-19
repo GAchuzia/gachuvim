@@ -7,6 +7,21 @@ for _, dir in ipairs(ignore_dirs) do
   table.insert(ignore_globs, "!**/" .. dir .. "/*")
 end
 
+-- Skip non-English translation and locale files. In large monorepos they are about half of
+-- all files, and opening each file is most of rg's time. en.json and en.yml stay searchable.
+for _, dir in ipairs({ "translations", "locales" }) do
+  for _, name in ipairs({ "[!e]*", "e[!n]*", "en?*" }) do
+    for _, ext in ipairs({ "json", "yml" }) do
+      table.insert(ignore_globs, "--glob")
+      table.insert(ignore_globs, "!**/" .. dir .. "/**/" .. name .. "." .. ext)
+    end
+  end
+end
+
+-- Neovim's default :grep uses rg -uu, which ignores .gitignore. Use the same filters instead.
+vim.o.grepprg = "rg --vimgrep --smart-case --hidden "
+  .. table.concat(vim.tbl_map(vim.fn.shellescape, ignore_globs), " ")
+
 return {
   {
     "nvim-telescope/telescope.nvim",

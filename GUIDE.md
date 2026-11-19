@@ -137,7 +137,7 @@ Run `nvim` and let plugins and parsers install. Restart and open a code file to 
 
 ## What's included
 
-16 plugins total, including the manager and shared dependency:
+20 plugins total, including the manager and shared dependencies:
 
 | Plugin | Purpose |
 | --- | --- |
@@ -155,6 +155,8 @@ Run `nvim` and let plugins and parsers install. Restart and open a code file to 
 | which-key.nvim | Shortcut help |
 | lualine.nvim | Statusline |
 | oil.nvim | File explorer |
+| nvim-dap + nvim-dap-ui + nvim-nio | Debugger and its panels |
+| nvim-dap-python | Python debug adapter setup |
 
 Terminals, commenting, diagnostics, EditorConfig, and persistent undo use Neovim's built-ins.
 
@@ -195,11 +197,12 @@ nvim .
 | `Space fh` / `Space fk` | Search help / keybindings |
 | `Ctrl-n` / `Space e` | Open file explorer |
 | `Space w` / `Space q` | Save / close window |
-| `Shift-h` / `Shift-l` | Previous / next buffer |
+| `[b` / `]b` | Previous / next buffer |
 | `Space bd` | Close buffer |
 | `Ctrl-h/j/k/l` | Move between windows |
 | `Space \|` / `Space -` | Vertical / horizontal split |
-| `gd` / `gr` / `K` | Definition / references / hover docs |
+| `gd` / `grr` / `K` | Definition / references / hover docs |
+| `gri` / `gy` | Implementations / type definition |
 | `Ctrl-o` / `Ctrl-i` | Back / forward in jump history |
 | `Space cr` / `Space ca` | Rename symbol / code action |
 | `Space cs` | Document symbols |
@@ -212,19 +215,27 @@ nvim .
 | `Space ghp` / `Space ghs` | Preview / stage or unstage hunk |
 | `Space ghr` | **Discard changes in hunk** |
 | `Space gb` / `Space gd` | Blame line / diff against index |
+| `Space gw` | Point this tab at a Git worktree (`:tcd`) |
+| `Space db` / `Space dc` | Toggle breakpoint / start or continue debugging |
+| `Space dn` / `Space di` / `Space do` | Step over / into / out |
+| `Space dm` / `Space du` / `Space dt` | Debug Python test under cursor / debug UI / stop |
 | `Space tt` | Open a new terminal split |
 | `Space pm` / `Space pl` | Manage language tools / plugins |
 
 **Completion (Insert mode):** `Ctrl-Space` opens the menu, `Ctrl-n/p` selects, `Ctrl-y` accepts, `Ctrl-e` dismisses. Enter stays a newline. `Tab` / `Shift-Tab` move through snippet fields supplied by an LSP.
 
-**Search:** press `Esc` to enter Normal mode, then `Ctrl-p` (or Space, f, f) to search **filenames**. Use Space, f, g to search **text inside files**. Type to filter; `Enter` opens, `Ctrl-v` opens in a vertical split. `Esc` leaves the picker's Insert mode; press it again to close. Dotfiles are included and common dependency/build folders are excluded. File search falls back to `fd`, `find`, or Windows `where` if `rg` is missing. The `find` and `where` fallbacks do not respect `.gitignore`.
+**Search:** press `Esc` to enter Normal mode, then `Ctrl-p` (or Space, f, f) to search **filenames**. Use Space, f, g to search **text inside files**. Type to filter; `Enter` opens, `Ctrl-v` opens in a vertical split. `Esc` leaves the picker's Insert mode; press it again to close. Dotfiles are included and common dependency/build folders are excluded. Non-English translation and locale files (`translations/`, `locales/`) are skipped too, which halves search time in large monorepos; `en.json` and `en.yml` are still searched. `:grep` uses the same filters. File search falls back to `fd`, `find`, or Windows `where` if `rg` is missing. The `find` and `where` fallbacks do not respect `.gitignore`.
 
 If search is empty or fails:
 - `:pwd` shows the search directory. Use `:cd /path/to/project` to change it.
 - `:echo executable('rg')` should print `1`. Text search requires ripgrep (`rg`) on Neovim's PATH. Install it through your package manager (e.g. `brew install ripgrep`), then reopen Neovim from that shell.
 - `:messages` shows errors. Ignored files won't appear when using `rg` or `fd`; use the explorer if needed.
 
-**Explorer:** Oil shows a directory as an editable buffer, hidden files included. `Enter` opens a file/directory and `-` goes up. Create, rename, move, and delete by editing the lines as text, then `:w` to apply; deletions go to the trash. `g?` lists every mapping and `:help oil.nvim` has the rest.
+**Explorer:** Oil shows a directory as an editable buffer, hidden files included. `Enter` opens a file/directory and `-` goes up. Create, rename, move, and delete by editing the lines as text, then `:w` to apply; deletions go to the trash. `g?` lists every mapping and `:help oil.nvim` has the rest. `Ctrl-h` and `Ctrl-l` still move between windows here; use `:e` to refresh the listing.
+
+**Worktrees:** each tab keeps its own working directory. Open a tab with `:tabnew`, press `Space gw`, and pick a worktree. File search, text search, and LazyGit in that tab then use the worktree. `:pwd` shows which one a tab uses.
+
+**Debugging:** run `:MasonInstall debugpy` once for Python. Set a breakpoint with `Space db`, then press `Space dc` to start, or put the cursor in a test and press `Space dm`. The debug UI opens when a session starts and closes when it ends. Other languages need their own adapter; see `:help dap-adapter`.
 
 **Terminal:** run dev servers, tests, and Git commands normally. `Esc Esc` returns to Normal mode; `i` resumes typing. `:hide` hides the terminal without stopping its process; reopen it with `Space fb`. `Ctrl-c` stops a foreground command; `exit` closes the shell. Each `Space tt` creates a new terminal, not a toggle.
 
@@ -240,7 +251,7 @@ In LazyGit's **Files** panel:
 - `?` shows available actions for the focused panel.
 - `q` quits LazyGit; on a normal exit, its tab closes and returns you to editing.
 
-Nothing is staged, committed, or pushed automatically. Review discard/reset actions carefully. If you leave terminal input mode with `Esc Esc`, press `i` to interact with LazyGit again.
+Nothing is staged, committed, or pushed automatically. Review discard/reset actions carefully. `Esc` goes straight to LazyGit with no delay, so `Esc Esc` does not leave its terminal; use `Ctrl-\ Ctrl-n` instead, then `i` to interact with LazyGit again.
 
 ## Language support and formatting
 
@@ -296,6 +307,6 @@ Use the health checks above after changing or updating the config.
 
 ### File map
 
-`init.lua` checks the Neovim version, loads the core modules, and starts Lazy; change it for startup behavior. In `lua/config/`, edit `options.lua` for indentation, display, and clipboard defaults; `keymaps.lua` for general shortcuts and the LazyGit launcher; and `autocmds.lua` for yank highlighting, diagnostic display, and mappings that appear when an LSP attaches. In `lua/plugins/`, `colorscheme.lua` selects and configures the theme; `completion.lua` sets completion sources and popup behavior; `dashboard.lua` sets the startup layout, menu actions, and layout picker; `editor.lua` names the shortcut groups in which-key; `formatting.lua` maps filetypes to formatters; `git.lua` configures Gitsigns and its buffer-local shortcuts; `icons.lua` loads both icon providers; `lsp-config.lua` lists default servers and their settings; `telescope.lua` defines search pickers, shortcuts, and exclusions; and `treesitter.lua` selects parsers and highlighting settings. Edit the relevant file, then restart Neovim to apply it.
+`init.lua` checks the Neovim version, loads the core modules, and starts Lazy; change it for startup behavior. In `lua/config/`, edit `options.lua` for indentation, display, and clipboard defaults; `keymaps.lua` for general shortcuts, the LazyGit launcher, and the worktree switcher; and `autocmds.lua` for yank highlighting, diagnostic display, and mappings that appear when an LSP attaches. In `lua/plugins/`, `colorscheme.lua` selects and configures the theme; `completion.lua` sets completion sources and popup behavior; `dashboard.lua` sets the startup layout, menu actions, and layout picker; `debug.lua` sets up the debugger and its shortcuts; `editor.lua` names the shortcut groups in which-key; `formatting.lua` maps filetypes to formatters; `git.lua` configures Gitsigns and its buffer-local shortcuts; `icons.lua` loads both icon providers; `lsp-config.lua` lists default servers and their settings; `telescope.lua` defines search pickers, shortcuts, and the exclusions `:grep` also uses; and `treesitter.lua` selects parsers and highlighting settings. Edit the relevant file, then restart Neovim to apply it.
 
 `README.md` is the quick-start page; `GUIDE.md` holds the detailed instructions—update these when behavior changes. `lazy-lock.json` records exact plugin revisions; let Lazy maintain it rather than editing hashes by hand. `.stylua.toml` defines how this repo's Lua is formatted; adjust it to change the coding style. `.gitignore` keeps swap files, backups, and macOS metadata out of Git; extend it for local artifacts, not files the config needs.

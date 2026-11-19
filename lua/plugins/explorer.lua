@@ -13,7 +13,8 @@ return {
       delete_to_trash = true,
       view_options = { show_hidden = true },
       -- Oil binds <C-p> to preview, which shadowed the global Telescope find_files.
-      keymaps = { ["<C-p>"] = false },
+      -- <C-h>/<C-l> (split, refresh) shadowed window moves. :e refreshes instead.
+      keymaps = { ["<C-p>"] = false, ["<C-h>"] = false, ["<C-l>"] = false },
     },
   },
 }
