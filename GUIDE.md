@@ -12,7 +12,7 @@
 - Internet access for initial downloads.
 - Optional: [LazyGit](https://github.com/jesseduffield/lazygit#installation) for `Space gg`.
 
-Check `rg --version`, `node --version`, and `npm --version` in the shell you use to launch Neovim. Missing ripgrep breaks text search; broken npm prevents web language-server installs. With Homebrew, `brew install ripgrep lazygit` installs the search and Git tools.
+Check `rg --version`, `node --version`, and `npm --version` in the shell you use to launch Neovim. Missing ripgrep breaks text search; broken npm prevents web language-server installs. With Homebrew, `brew install ripgrep lazygit` installs the search and Git tools. With Nix, `nix profile install nixpkgs#ripgrep nixpkgs#fd` puts them on your PATH through `~/.nix-profile/bin`. On a managed Mac that blocks downloaded binaries, use the Nix install; a ripgrep extracted from a release tarball is killed silently, and Telescope then shows an empty file list and a "ripgrep is a required dependency" error for text search.
 
 ### Install Neovim on Apple Silicon
 
