@@ -1,7 +1,7 @@
 return {
   {
     "saghen/blink.cmp",
-    version = "1.*", -- v2 requires Neovim 0.12.
+    version = "1.*",
     event = "InsertEnter",
     opts = {
       -- <C-k> would block digraphs. Neovim's <C-s> already shows signature help.

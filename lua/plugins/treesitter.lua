@@ -1,39 +1,46 @@
+local languages = {
+  "lua",
+  "javascript",
+  "typescript",
+  "tsx",
+  "html",
+  "css",
+  "json",
+  "ruby",
+  "python",
+  "sql",
+  "go",
+  "gomod",
+  "gosum",
+  "gowork",
+  "c",
+  "cpp",
+  "markdown",
+  "markdown_inline",
+  "vim",
+  "vimdoc",
+  "query",
+}
+
 return {
   "nvim-treesitter/nvim-treesitter",
-  -- main requires Neovim 0.12.
-  branch = "master",
+  branch = "main",
   lazy = false,
   build = ":TSUpdate",
-  opts = {
-    ensure_installed = {
-      "lua",
-      "javascript",
-      "typescript",
-      "tsx",
-      "html",
-      "css",
-      "json",
-      "ruby",
-      "python",
-      "sql",
-      "go",
-      "gomod",
-      "gosum",
-      "gowork",
-      "c",
-      "cpp",
-      "markdown",
-      "markdown_inline",
-      "vim",
-      "vimdoc",
-      "query",
-    },
-    auto_install = false,
-    highlight = { enable = true },
-    -- Python's Treesitter indent is known to be unreliable.
-    indent = { enable = true, disable = { "python" } },
-  },
-  config = function(_, opts)
-    require("nvim-treesitter.configs").setup(opts)
+  config = function()
+    require("nvim-treesitter").install(languages)
+    -- main no longer starts highlighting or indentation itself.
+    vim.api.nvim_create_autocmd("FileType", {
+      group = vim.api.nvim_create_augroup("UserTreesitter", { clear = true }),
+      callback = function(event)
+        if not pcall(vim.treesitter.start, event.buf) then
+          return
+        end
+        -- Python's Treesitter indent is known to be unreliable.
+        if vim.bo[event.buf].filetype ~= "python" then
+          vim.bo[event.buf].indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+        end
+      end,
+    })
   end,
 }

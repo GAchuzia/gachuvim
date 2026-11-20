@@ -6,13 +6,14 @@
 
 ### Requirements
 
-- Neovim **0.11.3–0.11.x** (tested on 0.11.6). Treesitter's `master` branch and Blink v1 target 0.11; this config does not support 0.12.
+- Neovim **0.12 or later** (tested on 0.12.6). Treesitter's `main` branch requires it.
 - Git, ripgrep (`rg`), curl, tar, and a C compiler for syntax parsers.
+- The `tree-sitter` CLI, 0.26.1 or later, from a package manager (not npm). Treesitter uses it to build parsers.
 - Node.js LTS with working npm for web language servers.
 - Internet access for initial downloads.
 - Optional: [LazyGit](https://github.com/jesseduffield/lazygit#installation) for `Space gg`.
 
-Check `rg --version`, `node --version`, and `npm --version` in the shell you use to launch Neovim. Missing ripgrep breaks text search; broken npm prevents web language-server installs. With Homebrew, `brew install ripgrep lazygit` installs the search and Git tools. With Nix, `nix profile install nixpkgs#ripgrep nixpkgs#fd` puts them on your PATH through `~/.nix-profile/bin`. On a managed Mac that blocks downloaded binaries, use the Nix install; a ripgrep extracted from a release tarball is killed silently, and Telescope then shows an empty file list and a "ripgrep is a required dependency" error for text search.
+Check `rg --version`, `tree-sitter --version`, `node --version`, and `npm --version` in the shell you use to launch Neovim. Missing ripgrep breaks text search; a missing `tree-sitter` stops parser installs; broken npm prevents web language-server installs. With Homebrew, `brew install ripgrep tree-sitter-cli lazygit` installs them. With Nix, `nix profile install nixpkgs#ripgrep nixpkgs#fd nixpkgs#tree-sitter` puts them on your PATH through `~/.nix-profile/bin`. On a managed Mac that blocks downloaded binaries, use the Nix install; a ripgrep extracted from a release tarball is killed silently, and Telescope then shows an empty file list and a "ripgrep is a required dependency" error for text search.
 
 ### Install Neovim on Apple Silicon
 
@@ -22,13 +23,13 @@ Run each line in the same terminal. Stop if a command fails.
 
 ```sh
 base="https://github.com/neovim/neovim/releases/download"
-curl -fL -o /tmp/nvim.tar.gz "$base/v0.11.6/nvim-macos-arm64.tar.gz"
+curl -fL -o /tmp/nvim.tar.gz "$base/v0.12.6/nvim-macos-arm64.tar.gz"
 ```
 
 After the download succeeds:
 
 ```sh
-dest="$HOME/.local/opt/nvim-0.11.6"
+dest="$HOME/.local/opt/nvim-0.12.6"
 mkdir -p "$dest" "$HOME/.local/bin"
 tar -xzf /tmp/nvim.tar.gz -C "$dest" --strip-components=1
 "$dest/bin/nvim" --version
@@ -40,7 +41,9 @@ Link the executable:
 ln -s "$dest/bin/nvim" "$HOME/.local/bin/nvim"
 ```
 
-If the link already exists, check it with `ls -l "$HOME/.local/bin/nvim"`. Keep it if it points to the binary above. Don't overwrite an unrelated file or link.
+If the link already exists, check it with `ls -l "$HOME/.local/bin/nvim"`. Keep it if it points to the binary above. If it points to an older Neovim you installed this way, replace it with `ln -sfn`. Don't overwrite an unrelated file or link.
+
+On a managed Mac that blocks downloaded binaries, install Neovim with Nix instead: `nix profile install nixpkgs#neovim`.
 
 Add it to this terminal's PATH:
 
@@ -59,11 +62,11 @@ grep -qxF "$line" ~/.zprofile || echo "$line" >> ~/.zprofile
 
 ### Other systems
 
-Download the matching build from the [Neovim 0.11.6 release](https://github.com/neovim/neovim/releases/tag/v0.11.6), add its executable directory to PATH, and check `nvim --version`.
+Download the matching build from the [latest stable Neovim release](https://github.com/neovim/neovim/releases/tag/stable), add its executable directory to PATH, and check `nvim --version`.
 
 ### Windows (native)
 
-Use Windows Terminal and install Neovim **0.11.6** from the release linked above. Extract the Windows archive and add its `bin` directory to your user PATH. Avoid installing a newer Neovim version until this config is updated for it.
+Use Windows Terminal and install Neovim **0.12 or later** from the release linked above. Extract the Windows archive and add its `bin` directory to your user PATH. Also install the `tree-sitter` CLI from its [releases page](https://github.com/tree-sitter/tree-sitter/releases) and add it to PATH.
 
 Install the supporting tools in PowerShell (skip anything already installed):
 
@@ -86,6 +89,7 @@ Open a fresh terminal after installing tools and check:
 ```powershell
 nvim --version
 rg --version
+tree-sitter --version
 node --version
 npm.cmd --version
 ```
@@ -297,7 +301,7 @@ Add parsers with `:TSInstall rust` (or another language), and formatter mappings
 ## Maintenance
 
 - `:Lazy restore` restores the committed plugin versions; `:Lazy update` intentionally updates them. Review the lockfile diff.
-- `:TSUpdate` updates parsers to match Treesitter. `:checkhealth nvim-treesitter` checks parsers and queries; `:InspectTree` shows the current file's syntax tree. A missing `tree-sitter` CLI warning is harmless for normal parser installs—it is only needed to generate parsers from grammars.
+- `:TSUpdate` updates parsers to match Treesitter. `:checkhealth nvim-treesitter` checks parsers and queries; `:InspectTree` shows the current file's syntax tree. Parser installs and updates need the `tree-sitter` CLI.
 - `:Mason` shows installed tools; `:MasonLog` explains installation failures.
 - `:checkhealth vim.lsp` checks attached servers; `:ConformInfo` explains formatting.
 - `:checkhealth` and `:messages` help with startup/runtime issues.

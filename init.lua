@@ -1,8 +1,6 @@
 -- Set leaders before loading plugins.
-if vim.fn.has("nvim-0.11.3") == 0 or vim.fn.has("nvim-0.12") == 1 then
-  error(
-    "Use Neovim 0.11.3–0.11.x (tested on 0.11.6). Treesitter's master API does not support 0.12."
-  )
+if vim.fn.has("nvim-0.12") == 0 then
+  error("Use Neovim 0.12 or later. nvim-treesitter's main branch requires it.")
 end
 
 require("config.options")
