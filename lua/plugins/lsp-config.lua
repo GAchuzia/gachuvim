@@ -26,6 +26,10 @@ return {
         },
       })
       vim.lsp.config("sqls", { root_markers = { ".git" } })
+      -- Not from Mason: its ruby-lsp is tied to the Ruby it was installed with, and some
+      -- projects need their own Ruby to read Gemfile.lock. Run `gem install ruby-lsp` with
+      -- the project's Ruby instead.
+      vim.lsp.enable("ruby_lsp")
       require("mason-lspconfig").setup({
         ensure_installed = {
           "lua_ls",
@@ -33,7 +37,6 @@ return {
           "html",
           "cssls",
           "jsonls",
-          "ruby_lsp",
           "pyright",
           "sqls",
           "gopls",
