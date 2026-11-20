@@ -17,9 +17,6 @@ mkdir -p ~/.config
 ln -s ~/personal/nvim-config ~/.config/nvim
 nvim
 ```
-
-For Ruby, run `gem install ruby-lsp` with the project's Ruby. For Python debugging, run `:MasonInstall debugpy`.
-
-## More
+---
 
 [GUIDE.md](GUIDE.md) lists the plugins, shortcuts, and dashboard layouts.
