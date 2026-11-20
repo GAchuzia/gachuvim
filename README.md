@@ -1,17 +1,25 @@
 # nvim-config
 
-Requires **Neovim 0.11.3–0.11.x**, Git, ripgrep, Node.js/npm, and a C compiler. Tested on 0.11.6 and 0.11.7; 0.12 is not supported.
+My Neovim setup: search, LSP, completion, Git, a file explorer, and a debugger.
 
-## Setup
+## You need
 
-On macOS/Linux, back up any existing `~/.config/nvim`, then link your checkout. Adjust the path if needed:
+- Neovim 0.12 or later.
+- Git, ripgrep, the tree-sitter CLI, Node.js with npm, and a C compiler.
+
+## Install
+
+On macOS or Linux, back up any existing `~/.config/nvim` first.
 
 ```sh
+git clone https://github.com/GAchuzia/nvim-config.git ~/personal/nvim-config
 mkdir -p ~/.config
-ln -s "$HOME/personal/nvim-config" "$HOME/.config/nvim"
+ln -s ~/personal/nvim-config ~/.config/nvim
 nvim
 ```
 
-Let plugins install, restart, and open a code file.
+Plugins install on the first launch. Restart, then open a code file so the language servers install.
 
-See [GUIDE.md](GUIDE.md) for installation details, keybindings, plugins, and troubleshooting.
+## More
+
+[GUIDE.md](GUIDE.md) has the keys, plugins, Windows setup, and fixes for common problems.
