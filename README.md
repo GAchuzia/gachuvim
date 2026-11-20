@@ -2,7 +2,7 @@
 
 > My Neovim setup
 
-## Reqirements
+## Requirements
 
 - Neovim 0.12 or later.
 - Git, ripgrep, the tree-sitter CLI, Node.js with npm, and a C compiler.
