@@ -1,316 +1,77 @@
 # Guide
 
-**Space is the leader key.** Press it and pause to see shortcuts.
+Space is the leader key. Press it and wait to see the shortcuts.
 
-## Setup
-
-### Requirements
-
-- Neovim **0.12 or later** (tested on 0.12.6). Treesitter's `main` branch requires it.
-- Git, ripgrep (`rg`), curl, tar, and a C compiler for syntax parsers.
-- The `tree-sitter` CLI, 0.26.1 or later, from a package manager (not npm). Treesitter uses it to build parsers.
-- Node.js LTS with working npm for web language servers.
-- Internet access for initial downloads.
-- Optional: [LazyGit](https://github.com/jesseduffield/lazygit#installation) for `Space gg`.
-
-Check `rg --version`, `tree-sitter --version`, `node --version`, and `npm --version` in the shell you use to launch Neovim. Missing ripgrep breaks text search; a missing `tree-sitter` stops parser installs; broken npm prevents web language-server installs. With Homebrew, `brew install ripgrep tree-sitter-cli lazygit` installs them. With Nix, `nix profile install nixpkgs#ripgrep nixpkgs#fd nixpkgs#tree-sitter` puts them on your PATH through `~/.nix-profile/bin`. On a managed Mac that blocks downloaded binaries, use the Nix install; a ripgrep extracted from a release tarball is killed silently, and Telescope then shows an empty file list and a "ripgrep is a required dependency" error for text search.
-
-### Install Neovim on Apple Silicon
-
-If `nvim --version` already reports a supported version, skip to [Link the config](#link-the-config).
-
-Run each line in the same terminal. Stop if a command fails.
-
-```sh
-base="https://github.com/neovim/neovim/releases/download"
-curl -fL -o /tmp/nvim.tar.gz "$base/v0.12.6/nvim-macos-arm64.tar.gz"
-```
-
-After the download succeeds:
-
-```sh
-dest="$HOME/.local/opt/nvim-0.12.6"
-mkdir -p "$dest" "$HOME/.local/bin"
-tar -xzf /tmp/nvim.tar.gz -C "$dest" --strip-components=1
-"$dest/bin/nvim" --version
-```
-
-Link the executable:
-
-```sh
-ln -s "$dest/bin/nvim" "$HOME/.local/bin/nvim"
-```
-
-If the link already exists, check it with `ls -l "$HOME/.local/bin/nvim"`. Keep it if it points to the binary above. If it points to an older Neovim you installed this way, replace it with `ln -sfn`. Don't overwrite an unrelated file or link.
-
-On a managed Mac that blocks downloaded binaries, install Neovim with Nix instead: `nix profile install nixpkgs#neovim`.
-
-Add it to this terminal's PATH:
-
-```sh
-export PATH="$HOME/.local/bin:$PATH"
-nvim --version
-```
-
-For future zsh login sessions, add the setting without duplicating it:
-
-```sh
-touch ~/.zprofile
-line='export PATH="$HOME/.local/bin:$PATH"'
-grep -qxF "$line" ~/.zprofile || echo "$line" >> ~/.zprofile
-```
-
-### Other systems
-
-Download the matching build from the [latest stable Neovim release](https://github.com/neovim/neovim/releases/tag/stable), add its executable directory to PATH, and check `nvim --version`.
-
-### Windows (native)
-
-Use Windows Terminal and install Neovim **0.12 or later** from the release linked above. Extract the Windows archive and add its `bin` directory to your user PATH. Also install the `tree-sitter` CLI from its [releases page](https://github.com/tree-sitter/tree-sitter/releases) and add it to PATH.
-
-Install the supporting tools in PowerShell (skip anything already installed):
-
-```powershell
-winget install --id Git.Git -e
-winget install --id BurntSushi.ripgrep.MSVC -e
-winget install --id OpenJS.NodeJS.LTS -e
-```
-
-LazyGit is optional:
-
-```powershell
-winget install --id JesseDuffield.lazygit -e
-```
-
-Treesitter also needs a Windows C compiler. One option is Visual Studio Build Tools with the **Desktop development with C++** workload; launch Neovim from its Developer PowerShell so `cl.exe` and the SDK are available. See [Treesitter's Windows notes](https://github.com/nvim-treesitter/nvim-treesitter/wiki/Windows-support) for other toolchains.
-
-Open a fresh terminal after installing tools and check:
-
-```powershell
-nvim --version
-rg --version
-tree-sitter --version
-node --version
-npm.cmd --version
-```
-
-Clone directly into Neovim's config directory to avoid symlink permissions. Replace the URL below with your repo URL. Back up any existing destination first:
-
-```powershell
-$repo = "https://github.com/YOUR-USER/nvim-config.git"
-git clone $repo "$env:LOCALAPPDATA\nvim"
-nvim
-```
-
-If the checkout already lives elsewhere, you can use a directory junction instead. The destination must not exist:
-
-```powershell
-$source = "$HOME\src\nvim-config"
-$target = "$env:LOCALAPPDATA\nvim"
-New-Item -ItemType Junction -Path $target -Target $source
-```
-
-If PowerShell blocks `npm.ps1`, use `npm.cmd` rather than weakening your execution policy. If search fails, check `:echo executable('rg')`; it should return `1`. File search can fall back to Windows `where`, but text search still needs `rg`. `:set shell?` shows which shell the built-in terminal uses.
-
-The config has been tested on macOS, not Windows. On Windows, run `:checkhealth`, `:checkhealth vim.lsp`, and `:ConformInfo` after installation; check clipboard and terminal behavior too.
-
-### Moving between machines
-
-Use the same repo revision and commit `lazy-lock.json`. Run `:Lazy restore` to use the pinned plugin revisions. Install external tools separately on each machine; the lockfile does not pin Neovim, Mason tools, Node, or LazyGit.
-
-Copy or clone only the config—not downloaded plugins, Mason packages, or compiled parsers. Let Neovim install those for the new OS. `:echo stdpath('config')` and `:echo stdpath('data')` show the active directories.
-
-WSL is another option: follow the Linux setup inside WSL, use Linux binaries, and keep the config at `~/.config/nvim`. Native Windows and WSL are separate installations.
-
-### Link the config
-
-On macOS/Linux, use your checkout's path below. The command works from any directory.
-
-If `~/.config/nvim` exists, inspect it first. Keep a correct link; back up another config before replacing it. For an incorrect **symlink**, `unlink "$HOME/.config/nvim"` removes the link without deleting its target. Don't use it on a real directory.
-
-```sh
-mkdir -p ~/.config
-ln -s "$HOME/personal/nvim-config" "$HOME/.config/nvim"
-```
-
-For Windows, use the clone or junction steps above. The config link does not install Neovim itself.
-
-### First launch
-
-Run `nvim` and let plugins and parsers install. Restart and open a code file to trigger language-server installs. `:Mason` shows tool installation progress; `:checkhealth` reports setup issues.
-
-## What's included
-
-20 plugins total, including the manager and shared dependencies:
+## Plugins
 
 | Plugin | Purpose |
 | --- | --- |
-| lazy.nvim | Plugin management and lockfile |
+| lazy.nvim | Plugin manager |
 | catppuccin | Colors |
-| alpha-nvim | Startup dashboard and layout previews |
-| mini.icons | Icons, including a nvim-web-devicons shim for plugins that expect it |
+| alpha-nvim | Start dashboard |
+| mini.icons | Icons |
 | telescope.nvim + plenary.nvim | File, text, and symbol search |
 | nvim-treesitter | Syntax highlighting and indentation |
-| nvim-lspconfig | Language server definitions |
-| mason.nvim + mason-lspconfig.nvim | Install and enable language servers |
-| blink.cmp (v1) | Code, path, and buffer completion |
-| conform.nvim | Explicit formatting |
-| gitsigns.nvim | Changed-line markers, hunk preview/staging, blame |
+| nvim-lspconfig + mason.nvim + mason-lspconfig.nvim | Language servers |
+| blink.cmp | Completion |
+| conform.nvim | Formatting |
+| gitsigns.nvim | Git hunks and blame |
 | which-key.nvim | Shortcut help |
 | lualine.nvim | Statusline |
 | oil.nvim | File explorer |
-| nvim-dap + nvim-dap-ui + nvim-nio | Debugger and its panels |
-| nvim-dap-python | Python debug adapter setup |
+| nvim-dap + nvim-dap-ui + nvim-nio + nvim-dap-python | Debugger |
 
-Terminals, commenting, diagnostics, EditorConfig, and persistent undo use Neovim's built-ins.
+## Shortcuts
 
-For icons, select a [Nerd Font](https://www.nerdfonts.com/) 3.3+ in your terminal's font settings. mini.icons is the only icon provider; it mocks nvim-web-devicons so plugins that require that module still get icons.
+Normal mode unless noted.
 
-## Dashboard layouts
-
-Plain `nvim` opens the default dashboard. Opening a file or directory, such as `nvim .`, skips it.
-
-Run `:Dashboard` to choose a layout, or preview one directly:
-
-| Command | Layout |
-| --- | --- |
-| `:Dashboard dashboard` | Centered banner and shortcuts |
-| `:Dashboard startify` | Left-aligned banner, shortcuts, and grouped recent files |
-| `:Dashboard theta` | Centered banner, recent files from this directory, and shortcuts |
-
-Press `d` on any dashboard to choose another layout. Use the displayed shortcut letters, or move with `j`/`k` and press Enter. `:Alpha` toggles the selected layout; previews last for the session. To set your startup choice, change `opts.theme` in `lua/plugins/dashboard.lua` to `dashboard`, `startify`, or `theta`.
-
-These are layouts, not a collection of different artworks: all three use Alpha's default Neovim banner. See the [community gallery](https://github.com/goolord/alpha-nvim/discussions/16) for custom banners and layouts; those examples aren't installed automatically.
-
-## Everyday use
-
-Start from a project's root so searches and terminals use the right directory:
-
-```sh
-cd /path/to/project
-nvim .
-```
-
-`i` enters Insert mode; `Esc` returns to Normal mode. `u` undoes, `Ctrl-r` redoes. `:w` saves, `:q` closes a window. Use `:Tutor` for an interactive introduction.
-
-| Keys (Normal mode unless noted) | Action |
+| Keys | Action |
 | --- | --- |
 | `Ctrl-p` / `Space ff` | Find files |
-| `Space fg` / `Space fw` | Search project text / word under cursor |
-| `Space fb` / `Space fr` | Open buffers / recent files |
-| `Space fh` / `Space fk` | Search help / keybindings |
-| `Ctrl-n` / `Space e` | Open file explorer |
+| `Space fg` / `Space fw` | Search text / word under cursor |
+| `Space fb` / `Space fr` | Buffers / recent files |
+| `Space fh` / `Space fk` | Help / keymaps |
+| `Space fs` | Resume last search |
+| `Ctrl-n` / `Space e` | File explorer |
 | `Space w` / `Space q` | Save / close window |
 | `[b` / `]b` | Previous / next buffer |
 | `Space bd` | Close buffer |
 | `Ctrl-h/j/k/l` | Move between windows |
 | `Space \|` / `Space -` | Vertical / horizontal split |
-| `gd` / `grr` / `K` | Definition / references / hover docs |
-| `gri` / `gy` | Implementations / type definition |
-| `Ctrl-o` / `Ctrl-i` | Back / forward in jump history |
-| `Space cr` / `Space ca` | Rename symbol / code action |
+| `gd` / `gD` / `gy` | Definition / declaration / type definition |
+| `grr` / `gri` | References / implementations |
+| `K` | Hover docs |
+| `Space cr` / `Space ca` | Rename / code action |
 | `Space cs` | Document symbols |
-| `[d` / `]d` / `Space cd` | Previous / next / explain diagnostic |
-| `Space xx` | Search reported diagnostics |
-| `Space cf` | Format buffer or Visual selection |
+| `[d` / `]d` / `Space cd` | Previous / next / show diagnostic |
+| `Space xx` / `Space xl` | Workspace / buffer diagnostics |
+| `Space cf` | Format buffer or selection |
 | `gcc` / Visual `gc` | Comment line / selection |
-| `Space gg` | Open LazyGit in a full-size terminal tab |
-| `[h` / `]h` | Previous / next Git hunk |
-| `Space ghp` / `Space ghs` | Preview / stage or unstage hunk |
-| `Space ghr` | **Discard changes in hunk** |
+| `Space gg` | LazyGit |
+| `[h` / `]h` | Previous / next hunk |
+| `Space ghp` / `Space ghs` / `Space ghr` | Preview / stage / **discard** hunk |
 | `Space gb` / `Space gd` | Blame line / diff against index |
-| `Space gw` | Point this tab at a Git worktree (`:tcd`) |
-| `Space db` / `Space dc` | Toggle breakpoint / start or continue debugging |
+| `Space gw` | Switch this tab to a worktree |
+| `Space db` / `Space dc` | Breakpoint / start or continue |
 | `Space dn` / `Space di` / `Space do` | Step over / into / out |
-| `Space dm` / `Space du` / `Space dt` | Debug Python test under cursor / debug UI / stop |
-| `Space tt` | Open a new terminal split |
-| `Space pm` / `Space pl` | Manage language tools / plugins |
+| `Space dm` / `Space du` / `Space dt` | Debug Python test / debug UI / stop |
+| `Space tt` | Terminal |
+| `Esc Esc` (terminal) | Leave terminal mode (`Ctrl-\ Ctrl-n` in LazyGit) |
+| `Space cl` | LSP health |
+| `Space pm` / `Space pl` | Mason / Lazy |
 
-**Completion (Insert mode):** `Ctrl-Space` opens the menu, `Ctrl-n/p` selects, `Ctrl-y` accepts, `Ctrl-e` dismisses. Enter stays a newline. `Tab` / `Shift-Tab` move through snippet fields supplied by an LSP.
+Completion (Insert mode): `Ctrl-Space` open, `Ctrl-n` / `Ctrl-p` select, `Ctrl-y` accept, `Ctrl-e` close, `Ctrl-s` signature help.
 
-**Search:** press `Esc` to enter Normal mode, then `Ctrl-p` (or Space, f, f) to search **filenames**. Use Space, f, g to search **text inside files**. Type to filter; `Enter` opens, `Ctrl-v` opens in a vertical split. `Esc` leaves the picker's Insert mode; press it again to close. Dotfiles are included and common dependency/build folders are excluded. Non-English translation and locale files (`translations/`, `locales/`) are skipped too, which halves search time in large monorepos; `en.json` and `en.yml` are still searched. `:grep` uses the same filters. File search falls back to `fd`, `find`, or Windows `where` if `rg` is missing. The `find` and `where` fallbacks do not respect `.gitignore`.
+Oil: `Enter` open, `-` parent folder, `g.` hidden files, `g?` all keys. Edit the lines, then `:w` to rename, move, or delete.
 
-If search is empty or fails:
-- `:pwd` shows the search directory. Use `:cd /path/to/project` to change it.
-- `:echo executable('rg')` should print `1`. Text search requires ripgrep (`rg`) on Neovim's PATH. Install it through your package manager (e.g. `brew install ripgrep`), then reopen Neovim from that shell.
-- `:messages` shows errors. Ignored files won't appear when using `rg` or `fd`; use the explorer if needed.
+## Dashboard layouts
 
-**Explorer:** Oil shows a directory as an editable buffer, hidden files included. `Enter` opens a file/directory and `-` goes up. Create, rename, move, and delete by editing the lines as text, then `:w` to apply; deletions go to the trash. `g?` lists every mapping and `:help oil.nvim` has the rest. `Ctrl-h` and `Ctrl-l` still move between windows here; use `:e` to refresh the listing.
+Plain `nvim` opens the dashboard. Press `d` on it to switch layouts.
 
-**Worktrees:** each tab keeps its own working directory. Open a tab with `:tabnew`, press `Space gw`, and pick a worktree. File search, text search, and LazyGit in that tab then use the worktree. `:pwd` shows which one a tab uses.
+| Command | Layout |
+| --- | --- |
+| `:Dashboard dashboard` | Centered banner and shortcuts |
+| `:Dashboard startify` | Banner, shortcuts, and recent files |
+| `:Dashboard theta` | Banner, recent files in this folder, and shortcuts |
 
-**Debugging:** run `:MasonInstall debugpy` once for Python. Set a breakpoint with `Space db`, then press `Space dc` to start, or put the cursor in a test and press `Space dm`. The debug UI opens when a session starts and closes when it ends. Other languages need their own adapter; see `:help dap-adapter`.
-
-**Terminal:** run dev servers, tests, and Git commands normally. `Esc Esc` returns to Normal mode; `i` resumes typing. `:hide` hides the terminal without stopping its process; reopen it with `Space fb`. `Ctrl-c` stops a foreground command; `exit` closes the shell. Each `Space tt` creates a new terminal, not a toggle.
-
-## Visual Git dashboard
-
-LazyGit is an optional standalone terminal app, not a Neovim plugin. With `lazygit` on your PATH, save your files and press **Space gg** in Normal mode. It opens the repository containing your current working directory (`:pwd`). Use `:cd /path/to/repo` to switch repositories first.
-
-In LazyGit's **Files** panel:
-- `j` / `k` or arrow keys select a file; the diff appears alongside it.
-- `Space` toggles staging for the selected file.
-- `Enter` opens the detailed diff for staging individual lines/hunks; follow the key hints at the bottom.
-- `c` opens the commit dialog for staged changes.
-- `?` shows available actions for the focused panel.
-- `q` quits LazyGit; on a normal exit, its tab closes and returns you to editing.
-
-Nothing is staged, committed, or pushed automatically. Review discard/reset actions carefully. `Esc` goes straight to LazyGit with no delay, so `Esc Esc` does not leave its terminal; use `Ctrl-\ Ctrl-n` instead, then `i` to interact with LazyGit again.
-
-## Language support and formatting
-
-Mason installs the configured language servers when you open a code file. Install each language's runtime and project dependencies separately.
-
-| Language | Server | Formatting (`Space cf`) |
-| --- | --- | --- |
-| Lua | `lua_ls` | StyLua |
-| JavaScript / TypeScript / JSX / TSX | `ts_ls` | Prettier |
-| HTML / CSS / JSON | `html`, `cssls`, `jsonls` | Prettier |
-| Ruby | `ruby_lsp` | Ruby LSP's project formatter |
-| Python | `pyright` | Ruff |
-| SQL | `sqls` | sql-formatter |
-| Go | `gopls` | gofmt |
-| C / C++ | `clangd` | clang-format |
-
-Treesitter highlighting is included for these languages and Go module files.
-
-**Formatting is manual, not on save.** Install the external formatters you need:
-
-```vim
-:MasonInstall stylua prettier ruff sql-formatter clang-format
-```
-
-Prettier prefers project-local installations and settings. `gofmt` comes with Go. Ruby uses LSP formatting when the project provides a supported formatter, such as RuboCop. If an external formatter is missing, Conform falls back to an attached LSP formatter when available.
-
-### Language setup notes
-
-- **Ruby:** use the project's Ruby version, with RubyGems and Bundler working before starting Neovim. Install the project's gems. Ruby LSP may create a `.ruby-lsp` bundle; don't commit generated editor dependencies. On Windows, native gems may need RubyInstaller's Devkit.
-- **Python:** install Python and activate the project's virtual environment before launching Neovim. Pyright itself installs through npm. Ruff here is a formatter, not an additional lint server.
-- **SQL:** install Go so Mason can build `sqls`. Schema-aware completion needs a database connection configured privately in sqls. No connection credentials or query-running shortcuts are included. sql-formatter defaults to standard SQL; set its dialect for dialect-specific syntax.
-- **Go:** install a current Go toolchain and work from a module with `go.mod` or a workspace with `go.work`. Mason builds `gopls` using Go.
-- **C/C++:** install the project's compiler/build tools. Generate `compile_commands.json` for accurate flags, headers, and navigation; CMake supports `-DCMAKE_EXPORT_COMPILE_COMMANDS=ON` with Ninja/Makefile generators. Use `.clang-format` for project formatting rules.
-
-After installing a missing runtime, restart Neovim and open a source file to retry the server install. Check `:Mason`, `:checkhealth vim.lsp`, and `:ConformInfo` if a tool is unavailable.
-
-## Extend only when needed
-
-For other languages, open a code file and use `:LspInstall`, for example `rust_analyzer`, `eslint`, or `yamlls`. Mason-installed servers are enabled automatically.
-
-Add parsers with `:TSInstall rust` (or another language), and formatter mappings in `lua/plugins/formatting.lua` as needed. Prettier also handles JSONC and Markdown.
-
-## Maintenance
-
-- `:Lazy restore` restores the committed plugin versions; `:Lazy update` intentionally updates them. Review the lockfile diff.
-- `:TSUpdate` updates parsers to match Treesitter. `:checkhealth nvim-treesitter` checks parsers and queries; `:InspectTree` shows the current file's syntax tree. Parser installs and updates need the `tree-sitter` CLI.
-- `:Mason` shows installed tools; `:MasonLog` explains installation failures.
-- `:checkhealth vim.lsp` checks attached servers; `:ConformInfo` explains formatting.
-- `:checkhealth` and `:messages` help with startup/runtime issues.
-- If tools fail to install, verify `node --version` and `npm --version` in the shell launching Neovim.
-
-Use the health checks above after changing or updating the config.
-
-### File map
-
-`init.lua` checks the Neovim version, loads the core modules, and starts Lazy; change it for startup behavior. In `lua/config/`, edit `options.lua` for indentation, display, and clipboard defaults; `keymaps.lua` for general shortcuts, the LazyGit launcher, and the worktree switcher; and `autocmds.lua` for yank highlighting, diagnostic display, and mappings that appear when an LSP attaches. In `lua/plugins/`, `colorscheme.lua` selects and configures the theme; `completion.lua` sets completion sources and popup behavior; `dashboard.lua` sets the startup layout, menu actions, and layout picker; `debug.lua` sets up the debugger and its shortcuts; `editor.lua` names the shortcut groups in which-key; `formatting.lua` maps filetypes to formatters; `git.lua` configures Gitsigns and its buffer-local shortcuts; `icons.lua` loads both icon providers; `lsp-config.lua` lists default servers and their settings; `telescope.lua` defines search pickers, shortcuts, and the exclusions `:grep` also uses; and `treesitter.lua` selects parsers and highlighting settings. Edit the relevant file, then restart Neovim to apply it.
-
-`README.md` is the quick-start page; `GUIDE.md` holds the detailed instructions—update these when behavior changes. `lazy-lock.json` records exact plugin revisions; let Lazy maintain it rather than editing hashes by hand. `.stylua.toml` defines how this repo's Lua is formatted; adjust it to change the coding style. `.gitignore` keeps swap files, backups, and macOS metadata out of Git; extend it for local artifacts, not files the config needs.
+Set the startup layout with `opts.theme` in `lua/plugins/dashboard.lua`.
