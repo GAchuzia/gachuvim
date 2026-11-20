@@ -25,3 +25,8 @@ opt.undofile = true
 opt.updatetime = 250
 opt.timeoutlen = 400
 opt.completeopt = { "menu", "menuone", "noselect" }
+
+-- No plugin here uses remote-plugin hosts, so skip them.
+for _, provider in ipairs({ "node", "perl", "python3", "ruby" }) do
+  vim.g["loaded_" .. provider .. "_provider"] = 0
+end

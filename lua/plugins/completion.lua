@@ -12,8 +12,7 @@ return {
       },
       sources = { default = { "lsp", "path", "buffer" } },
       signature = { enabled = true },
-      -- No native build needed.
-      fuzzy = { implementation = "lua" },
+      fuzzy = { implementation = "prefer_rust_with_warning" },
     },
   },
 }
