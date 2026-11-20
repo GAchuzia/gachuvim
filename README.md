@@ -1,8 +1,8 @@
 # nvim-config
 
-My Neovim setup: search, LSP, completion, Git, a file explorer, and a debugger.
+> My Neovim setup
 
-## You need
+## Reqirements
 
 - Neovim 0.12 or later.
 - Git, ripgrep, the tree-sitter CLI, Node.js with npm, and a C compiler.
@@ -17,8 +17,6 @@ mkdir -p ~/.config
 ln -s ~/personal/nvim-config ~/.config/nvim
 nvim
 ```
-
-Plugins install on the first launch. Restart, then open a code file so the language servers install.
 
 ## More
 
