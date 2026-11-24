@@ -27,11 +27,23 @@ return {
     "nvim-telescope/telescope.nvim",
     version = "*",
     cmd = "Telescope",
-    dependencies = { "nvim-lua/plenary.nvim" },
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+      { "nvim-telescope/telescope-fzf-native.nvim", build = "make" },
+    },
     keys = {
       { "<C-p>", "<cmd>Telescope find_files<cr>", desc = "Find files" },
       { "<leader>ff", "<cmd>Telescope find_files<cr>", desc = "Find files" },
       { "<leader>fg", "<cmd>Telescope live_grep<cr>", desc = "Search project text" },
+      {
+        "<leader>fG",
+        function()
+          -- Nearest component, then zone, then repo. Much faster than the whole monorepo.
+          local root = vim.fs.root(0, { "component.yml", "dev.yml", ".git" })
+          require("telescope.builtin").live_grep({ cwd = root })
+        end,
+        desc = "Search text in this component",
+      },
       { "<leader>fw", "<cmd>Telescope grep_string<cr>", desc = "Search word under cursor" },
       { "<leader>fb", "<cmd>Telescope buffers<cr>", desc = "Find buffers" },
       { "<leader>fr", "<cmd>Telescope oldfiles<cr>", desc = "Recent files" },
@@ -72,5 +84,9 @@ return {
         },
       },
     },
+    config = function(_, opts)
+      require("telescope").setup(opts)
+      require("telescope").load_extension("fzf")
+    end,
   },
 }
