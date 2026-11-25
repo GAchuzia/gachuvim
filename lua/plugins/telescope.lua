@@ -50,6 +50,11 @@ return {
       { "<leader>fh", "<cmd>Telescope help_tags<cr>", desc = "Search help" },
       { "<leader>fk", "<cmd>Telescope keymaps<cr>", desc = "Search keymaps" },
       { "<leader>fs", "<cmd>Telescope resume<cr>", desc = "Resume last search" },
+      {
+        "<leader>ut",
+        "<cmd>Telescope colorscheme enable_preview=true<cr>",
+        desc = "Toggle theme (live preview)",
+      },
       { "<leader>xx", "<cmd>Telescope diagnostics<cr>", desc = "Workspace diagnostics" },
     },
     opts = {
