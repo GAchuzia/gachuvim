@@ -11,6 +11,7 @@ return {
       { "<leader>gh", group = "git hunks" },
       { "<leader>p", group = "plugins / tools" },
       { "<leader>t", group = "terminal" },
+      { "<leader>u", group = "ui" },
       { "<leader>x", group = "diagnostics" },
     },
   },
