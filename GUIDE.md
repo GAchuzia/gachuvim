@@ -7,7 +7,7 @@ Space is the leader key. Press it and wait to see the shortcuts.
 | Plugin | Purpose |
 | --- | --- |
 | lazy.nvim | Plugin manager |
-| catppuccin | Colors |
+| catppuccin, tokyonight, rose-pine, gruvbox, kanagawa, everforest, nightfox | Colors. `Space ut` picks one, and the choice is remembered across restarts |
 | alpha-nvim | Start dashboard |
 | mini.icons | Icons |
 | snacks.nvim | File, text, and symbol search |
@@ -19,6 +19,8 @@ Space is the leader key. Press it and wait to see the shortcuts.
 | which-key.nvim | Shortcut help |
 | lualine.nvim | Statusline |
 | oil.nvim | File explorer |
+| render-markdown.nvim | Markdown rendering in the editor |
+| vimtex | LaTeX: `\ll` compiles, `\lv` opens the PDF in Skim |
 | nvim-dap + nvim-dap-ui + nvim-nio + nvim-dap-python | Debugger |
 
 ## Shortcuts
