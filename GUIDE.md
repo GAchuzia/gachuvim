@@ -8,7 +8,7 @@ Space is the leader key. Press it and wait to see the shortcuts.
 | --- | --- |
 | lazy.nvim | Plugin manager |
 | catppuccin, tokyonight, rose-pine, gruvbox, kanagawa, everforest, nightfox | Colors. `Space ut` picks one, and the choice is remembered across restarts |
-| alpha-nvim + milli.nvim | Start dashboard, with an animated blackhole splash |
+| alpha-nvim | Start dashboard |
 | mini.icons | Icons |
 | snacks.nvim | File, text, and symbol search |
 | nvim-treesitter | Syntax highlighting and indentation |
