@@ -1,13 +1,10 @@
-<div align="center">
-
 # nvim-config
 
-My Neovim setup.
+> My Neovim setup.
 
 [![Neovim 0.12+](https://img.shields.io/badge/Neovim-0.12%2B-57A143?logo=neovim&logoColor=white)](https://neovim.io)
 [![Lint](https://github.com/GAchuzia/nvim-config/actions/workflows/lint.yml/badge.svg)](https://github.com/GAchuzia/nvim-config/actions/workflows/lint.yml)
 
-</div>
 
 ## Install
 
