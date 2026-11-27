@@ -1,7 +1,6 @@
 # nvim-config
 
-My Neovim setup for Ruby and big monorepos.
-
+> My custom Neovim setup
 ## Install
 
 ```sh
