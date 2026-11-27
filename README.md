@@ -1,11 +1,11 @@
-# nvim-config
+# gachuvim
 
 > My custom Neovim setup
 ## Install
 
 ```sh
-git clone https://github.com/GAchuzia/nvim-config ~/personal/nvim-config
-ln -s ~/personal/nvim-config ~/.config/nvim
+git clone https://github.com/GAchuzia/gachuvim ~/personal/gachuvim
+ln -s ~/personal/gachuvim ~/.config/nvim
 ```
 
 ## Layout
