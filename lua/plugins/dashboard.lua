@@ -1,10 +1,13 @@
 return {
   "goolord/alpha-nvim",
   lazy = false,
-  dependencies = { "nvim-mini/mini.icons", "nvim-lua/plenary.nvim" },
+  dependencies = { "nvim-mini/mini.icons", "nvim-lua/plenary.nvim", "amansingh-afk/milli.nvim" },
   opts = { theme = "startify" },
   config = function(_, opts)
     local alpha = require("alpha")
+    local splash = { splash = "blackhole", loop = true }
+    -- milli animates over the header, so the header starts as the splash's first frame.
+    local splash_header = require("milli").load(splash).frames[1]
     local names = { "dashboard", "startify", "theta" }
     local descriptions = {
       dashboard = "Centered banner and shortcuts",
@@ -14,6 +17,8 @@ return {
 
     local function configure(name)
       local theme = require("alpha.themes." .. name)
+      local header = name == "theta" and theme.header or theme.section.header
+      header.val = splash_header
       local button = theme.button or require("alpha.themes.dashboard").button
       local buttons = {
         button("e", "New file", "<cmd>enew<cr>"),
@@ -50,6 +55,7 @@ return {
     end
 
     configure(opts.theme)
+    require("milli").alpha(splash)
     vim.api.nvim_create_user_command("Dashboard", function(args)
       if args.args ~= "" then
         preview(args.args)
