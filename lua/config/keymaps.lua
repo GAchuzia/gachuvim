@@ -50,6 +50,20 @@ map("n", "<leader>gw", function()
     end
   end)
 end, { desc = "Switch tab to worktree" })
+local function copy_path(modifier, label)
+  return function()
+    local path = vim.fn.expand("%" .. modifier)
+    if path == "" then
+      return vim.notify("This buffer has no file.", vim.log.levels.WARN)
+    end
+    vim.fn.setreg("+", path)
+    -- Leave the path out: a long one wraps and blocks on "Press ENTER".
+    vim.notify("Copied " .. label)
+  end
+end
+map("n", "<leader>yr", copy_path(":.", "relative path"), { desc = "Copy relative path" })
+map("n", "<leader>yp", copy_path(":p", "absolute path"), { desc = "Copy absolute path" })
+map("n", "<leader>yn", copy_path(":t", "file name"), { desc = "Copy file name" })
 map("n", "<Esc>", "<cmd>nohlsearch<cr>", { desc = "Clear search highlight" })
 map("n", "<C-h>", "<C-w>h", { desc = "Go to left window" })
 map("n", "<C-j>", "<C-w>j", { desc = "Go to lower window" })

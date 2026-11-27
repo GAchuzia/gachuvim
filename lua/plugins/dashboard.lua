@@ -17,9 +17,9 @@ return {
       local button = theme.button or require("alpha.themes.dashboard").button
       local buttons = {
         button("e", "New file", "<cmd>enew<cr>"),
-        button("f", "Find files", "<cmd>Telescope find_files<cr>"),
-        button("r", "Recent files", "<cmd>Telescope oldfiles<cr>"),
-        button("s", "Search text", "<cmd>Telescope live_grep<cr>"),
+        button("f", "Find files", "<cmd>lua Snacks.picker.files()<cr>"),
+        button("r", "Recent files", "<cmd>lua Snacks.picker.recent()<cr>"),
+        button("s", "Search text", "<cmd>lua Snacks.picker.grep()<cr>"),
         button("d", "Choose layout", "<cmd>Dashboard<cr>"),
         button("q", "Quit", "<cmd>qa<cr>"),
       }

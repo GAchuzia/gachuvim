@@ -10,7 +10,7 @@ Space is the leader key. Press it and wait to see the shortcuts.
 | catppuccin | Colors |
 | alpha-nvim | Start dashboard |
 | mini.icons | Icons |
-| telescope.nvim + plenary.nvim | File, text, and symbol search |
+| snacks.nvim | File, text, and symbol search |
 | nvim-treesitter | Syntax highlighting and indentation |
 | nvim-lspconfig + mason.nvim + mason-lspconfig.nvim | Language servers |
 | blink.cmp | Completion |
@@ -28,10 +28,13 @@ Normal mode unless noted.
 | Keys | Action |
 | --- | --- |
 | `Ctrl-p` / `Space ff` | Find files |
-| `Space fg` / `Space fw` | Search text / word under cursor |
+| `Space fg` / `Space fw` | Search text / word under cursor in this component |
+| `Space fG` / `Space fW` | Search text / word under cursor in the whole project |
 | `Space fb` / `Space fr` | Buffers / recent files |
 | `Space fh` / `Space fk` | Help / keymaps |
 | `Space fs` | Resume last search |
+| `Space ut` | Pick a theme (live preview) |
+| `Space yr` / `Space yp` / `Space yn` | Copy relative path / absolute path / file name |
 | `Ctrl-n` / `Space e` | File explorer |
 | `Space w` / `Space q` | Save / close window |
 | `[b` / `]b` | Previous / next buffer |

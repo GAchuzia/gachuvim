@@ -30,12 +30,18 @@ vim.api.nvim_create_autocmd("LspAttach", {
     map("gd", vim.lsp.buf.definition, "Go to definition")
     map("gD", vim.lsp.buf.declaration, "Go to declaration")
     -- grr/gri replace Neovim's defaults. A bare gr would wait for grn, gra, and the rest.
-    map("grr", "<cmd>Telescope lsp_references<cr>", "Find references")
-    map("gri", "<cmd>Telescope lsp_implementations<cr>", "Find implementations")
+    map("grr", function()
+      Snacks.picker.lsp_references()
+    end, "Find references")
+    map("gri", function()
+      Snacks.picker.lsp_implementations()
+    end, "Find implementations")
     map("gy", vim.lsp.buf.type_definition, "Go to type definition")
     map("K", vim.lsp.buf.hover, "Hover documentation")
     map("<leader>cr", vim.lsp.buf.rename, "Rename symbol")
-    map("<leader>cs", "<cmd>Telescope lsp_document_symbols<cr>", "Document symbols")
+    map("<leader>cs", function()
+      Snacks.picker.lsp_symbols()
+    end, "Document symbols")
     vim.keymap.set({ "n", "x" }, "<leader>ca", vim.lsp.buf.code_action, {
       buffer = event.buf,
       desc = "Code action",

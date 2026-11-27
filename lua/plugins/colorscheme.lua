@@ -1,6 +1,6 @@
 -- Theme collection + live toggling.
 --
--- Browse/preview with <leader>ut (Telescope colorscheme, live preview).
+-- Browse/preview with <leader>ut (Snacks colorscheme picker, live preview).
 -- Your choice is remembered across restarts.
 --
 -- To add a theme: drop another spec in the list below, then run :Lazy sync.
@@ -20,7 +20,7 @@ local function read_colorscheme()
   return "catppuccin" -- default on first launch
 end
 
--- Remember whatever colorscheme ends up applied (Telescope reverts on cancel,
+-- Remember whatever colorscheme ends up applied (the picker reverts on cancel,
 -- so the final saved value matches what you actually selected). The `ready`
 -- flag prevents transient startup/default schemes (e.g. habamax) from being
 -- persisted before our saved theme has been applied.
@@ -61,7 +61,7 @@ return {
           gitsigns = true,
           mason = true,
           mini = { enabled = true },
-          telescope = true,
+          snacks = { enabled = true },
           which_key = true,
         },
       })

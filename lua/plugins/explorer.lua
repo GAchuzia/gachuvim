@@ -12,7 +12,7 @@ return {
       default_file_explorer = true,
       delete_to_trash = true,
       view_options = { show_hidden = true },
-      -- Oil binds <C-p> to preview, which shadowed the global Telescope find_files.
+      -- Oil binds <C-p> to preview, which shadowed the global find files.
       -- <C-h>/<C-l> (split, refresh) shadowed window moves. :e refreshes instead.
       keymaps = { ["<C-p>"] = false, ["<C-h>"] = false, ["<C-l>"] = false },
     },
