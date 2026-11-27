@@ -10,6 +10,7 @@ Space is the leader key. Press it and wait to see the shortcuts.
 | catppuccin, tokyonight, rose-pine, gruvbox, kanagawa, everforest, nightfox | Colors. `Space ut` picks one, and the choice is remembered across restarts |
 | alpha-nvim | Start dashboard |
 | mini.icons | Icons |
+| mini.surround | Add, change, and delete quotes and brackets |
 | snacks.nvim | File, text, and symbol search |
 | nvim-treesitter | Syntax highlighting and indentation |
 | nvim-lspconfig + mason.nvim + mason-lspconfig.nvim | Language servers |
@@ -42,6 +43,7 @@ Normal mode unless noted.
 | `[b` / `]b` | Previous / next buffer |
 | `Space bd` | Close buffer |
 | `Ctrl-h/j/k/l` | Move between windows |
+| `Ctrl-d` / `Ctrl-u` | Half page down / up, cursor centred |
 | `Space \|` / `Space -` | Vertical / horizontal split |
 | `gd` / `gD` / `gy` | Definition / declaration / type definition |
 | `grr` / `gri` | References / implementations |
@@ -52,6 +54,10 @@ Normal mode unless noted.
 | `Space xx` / `Space xl` | Workspace / buffer diagnostics |
 | `Space cf` | Format buffer or selection |
 | `gcc` / Visual `gc` | Comment line / selection |
+| Visual `J` / `K` | Move selected lines down / up |
+| `saiw"` / `sr"'` / `sd(` | Add quotes around a word / swap `"` for `'` / delete brackets |
+| `za` / `zM` / `zR` | Toggle fold / fold everything / open everything |
+| `]s` / `[s` / `z=` / `zg` | Next / previous misspelling, suggestions, add word (Markdown, commits, LaTeX) |
 | `Space gg` | LazyGit |
 | `[h` / `]h` | Previous / next hunk |
 | `Space ghp` / `Space ghs` / `Space ghr` | Preview / stage / **discard** hunk |
@@ -61,6 +67,7 @@ Normal mode unless noted.
 | `Space dn` / `Space di` / `Space do` | Step over / into / out |
 | `Space dm` / `Space du` / `Space dt` | Debug Python test / debug UI / stop |
 | `Space tt` | Terminal |
+| `Space tf` / `Space tn` | Run `dev test` on this file / on the test under the cursor |
 | `Esc Esc` (terminal) | Leave terminal mode (`Ctrl-\ Ctrl-n` in LazyGit) |
 | `Space cl` | LSP health |
 | `Space pm` / `Space pl` | Mason / Lazy |

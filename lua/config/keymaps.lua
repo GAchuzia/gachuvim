@@ -3,6 +3,41 @@ local map = vim.keymap.set
 map("n", "<leader>w", "<cmd>write<cr>", { desc = "Save buffer" })
 map("n", "<leader>q", "<cmd>quit<cr>", { desc = "Quit window" })
 map("n", "<leader>tt", "<cmd>botright 12split | terminal<cr>", { desc = "New terminal" })
+
+-- Run `dev test` on this file, or just the test above the cursor, in a split.
+local function run_test(nearest)
+  local file = vim.fn.expand("%:p")
+  local zone = vim.fs.root(0, "dev.yml")
+  if file == "" or not zone then
+    return vim.notify("Open a test file inside a dev zone first.", vim.log.levels.WARN)
+  end
+  local cmd = { "/opt/dev/bin/dev", "test", file }
+  if nearest then
+    local name
+    for lnum = vim.fn.line("."), 1, -1 do
+      local line = vim.fn.getline(lnum)
+      -- `test "does a thing" do` defines test_does_a_thing.
+      local declared = line:match([[^%s*test%s+["'](.+)["']%s+do]])
+      name = declared and ("test_" .. declared:gsub("%s+", "_"))
+        or line:match("^%s*def%s+(test_[%w_?!]+)")
+      if name then
+        break
+      end
+    end
+    if not name then
+      return vim.notify("No test above the cursor.", vim.log.levels.WARN)
+    end
+    vim.list_extend(cmd, { "-n", name })
+  end
+  vim.cmd("botright 15new")
+  vim.fn.jobstart(cmd, { term = true, cwd = zone })
+end
+map("n", "<leader>tf", function()
+  run_test(false)
+end, { desc = "Test this file" })
+map("n", "<leader>tn", function()
+  run_test(true)
+end, { desc = "Test the test under the cursor" })
 map("n", "<leader>gg", function()
   if vim.fn.executable("lazygit") == 0 then
     return vim.notify("Install lazygit and add it to PATH first.", vim.log.levels.WARN)
@@ -69,11 +104,15 @@ map("n", "<C-h>", "<C-w>h", { desc = "Go to left window" })
 map("n", "<C-j>", "<C-w>j", { desc = "Go to lower window" })
 map("n", "<C-k>", "<C-w>k", { desc = "Go to upper window" })
 map("n", "<C-l>", "<C-w>l", { desc = "Go to right window" })
+map("n", "<C-d>", "<C-d>zz", { desc = "Half page down, centred" })
+map("n", "<C-u>", "<C-u>zz", { desc = "Half page up, centred" })
 map("n", "<leader>|", "<cmd>vsplit<cr>", { desc = "Split vertically" })
 map("n", "<leader>-", "<cmd>split<cr>", { desc = "Split horizontally" })
 map("n", "<leader>bd", "<cmd>bdelete<cr>", { desc = "Delete buffer" })
 map("v", "<", "<gv", { desc = "Indent left" })
 map("v", ">", ">gv", { desc = "Indent right" })
+map("v", "J", ":m '>+1<cr>gv=gv", { desc = "Move lines down", silent = true })
+map("v", "K", ":m '<-2<cr>gv=gv", { desc = "Move lines up", silent = true })
 map("n", "<leader>cd", vim.diagnostic.open_float, { desc = "Line diagnostics" })
 map("n", "<leader>cl", "<cmd>checkhealth vim.lsp<cr>", { desc = "LSP health" })
 map("n", "<leader>xl", vim.diagnostic.setloclist, { desc = "Buffer diagnostics list" })

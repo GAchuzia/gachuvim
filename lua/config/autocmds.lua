@@ -49,6 +49,15 @@ vim.api.nvim_create_autocmd("LspAttach", {
   end,
 })
 
+-- Spell check prose, not code.
+vim.api.nvim_create_autocmd("FileType", {
+  group = group,
+  pattern = { "markdown", "gitcommit", "tex" },
+  callback = function()
+    vim.opt_local.spell = true
+  end,
+})
+
 vim.diagnostic.config({
   severity_sort = true,
   underline = true,

@@ -10,7 +10,7 @@ return {
       { "<leader>g", group = "git" },
       { "<leader>gh", group = "git hunks" },
       { "<leader>p", group = "plugins / tools" },
-      { "<leader>t", group = "terminal" },
+      { "<leader>t", group = "terminal / tests" },
       { "<leader>u", group = "ui" },
       { "<leader>x", group = "diagnostics" },
       { "<leader>y", group = "copy path" },

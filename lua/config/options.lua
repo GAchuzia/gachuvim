@@ -25,6 +25,8 @@ opt.undofile = true
 opt.updatetime = 250
 opt.timeoutlen = 400
 opt.completeopt = { "menu", "menuone", "noselect" }
+opt.foldlevel = 99 -- start with every fold open
+opt.spellfile = vim.fn.stdpath("config") .. "/spell/en.utf-8.add" -- zg adds words here
 
 -- Nothing here uses the remote plugin providers, so turn them off.
 for _, provider in ipairs({ "node", "perl", "python3", "ruby" }) do
