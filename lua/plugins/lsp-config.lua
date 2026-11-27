@@ -29,9 +29,9 @@ return {
       -- Drop filetypes Neovim never sets (c.doxygen, cpp.doxygen, gotmpl).
       vim.lsp.config("clangd", { filetypes = { "c", "cpp", "objc", "objcpp", "cuda" } })
       vim.lsp.config("gopls", { filetypes = { "go", "gomod", "gowork" } })
-      -- Not from Mason: its ruby-lsp is tied to the Ruby it was installed with, and some
-      -- projects need their own Ruby to read Gemfile.lock. Run `gem install ruby-lsp` with
-      -- the project's Ruby instead.
+      -- Not from Mason. Mason's ruby-lsp is stuck on the Ruby it was installed with, and some
+      -- projects need their own Ruby to read Gemfile.lock. Install it with `gem install ruby-lsp`
+      -- using the project's Ruby.
       vim.lsp.enable("ruby_lsp")
       require("mason-lspconfig").setup({
         ensure_installed = {

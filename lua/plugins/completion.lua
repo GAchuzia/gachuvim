@@ -4,7 +4,7 @@ return {
     version = "1.*",
     event = "InsertEnter",
     opts = {
-      -- <C-k> would block digraphs. Neovim's <C-s> already shows signature help.
+      -- <C-k> is for digraphs, and Neovim already has <C-s> for signature help.
       keymap = { preset = "default", ["<C-k>"] = false },
       completion = {
         documentation = { auto_show = true, auto_show_delay_ms = 250 },

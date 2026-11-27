@@ -13,7 +13,7 @@ map("n", "<leader>gg", function()
   end
   vim.cmd.tabnew()
   local win, buf = vim.api.nvim_get_current_win(), vim.api.nvim_get_current_buf()
-  -- Send Esc to LazyGit at once instead of waiting to see if it starts <Esc><Esc>.
+  -- Pass Esc straight to LazyGit. Otherwise it waits to see if you're typing <Esc><Esc>.
   vim.keymap.set("t", "<Esc>", "<Esc>", { buffer = buf, nowait = true })
   vim.fn.jobstart({ "lazygit" }, {
     term = true,
@@ -57,7 +57,7 @@ local function copy_path(modifier, label)
       return vim.notify("This buffer has no file.", vim.log.levels.WARN)
     end
     vim.fn.setreg("+", path)
-    -- Leave the path out: a long one wraps and blocks on "Press ENTER".
+    -- No path in the message. A long one wraps and triggers "Press ENTER".
     vim.notify("Copied " .. label)
   end
 end

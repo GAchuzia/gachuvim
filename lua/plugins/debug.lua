@@ -6,7 +6,7 @@ return {
       "nvim-neotest/nvim-nio",
       "mfussenegger/nvim-dap-python",
     },
-    -- Leader keys, because macOS takes some function keys.
+    -- Leader keys, since macOS grabs some of the F keys.
     keys = {
       {
         "<leader>db",

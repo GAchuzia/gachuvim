@@ -1,4 +1,4 @@
--- Set leaders before loading plugins.
+-- config.options sets the leader keys, so it has to load before the plugins.
 if vim.fn.has("nvim-0.12") == 0 then
   error("Use Neovim 0.12 or later. nvim-treesitter's main branch requires it.")
 end

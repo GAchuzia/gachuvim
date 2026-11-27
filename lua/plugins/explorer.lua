@@ -1,7 +1,7 @@
 return {
   {
     "stevearc/oil.nvim",
-    -- Eager so it can claim netrw's role before `nvim <dir>` is handled.
+    -- Not lazy, so it takes over from netrw before `nvim <dir>` opens.
     lazy = false,
     dependencies = { "nvim-mini/mini.icons" },
     keys = {
@@ -12,8 +12,8 @@ return {
       default_file_explorer = true,
       delete_to_trash = true,
       view_options = { show_hidden = true },
-      -- Oil binds <C-p> to preview, which shadowed the global find files.
-      -- <C-h>/<C-l> (split, refresh) shadowed window moves. :e refreshes instead.
+      -- Oil's <C-p> (preview) shadowed find files, and <C-h>/<C-l> (split, refresh)
+      -- shadowed window moves. Use :e to refresh.
       keymaps = { ["<C-p>"] = false, ["<C-h>"] = false, ["<C-l>"] = false },
     },
   },

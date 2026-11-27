@@ -1,10 +1,6 @@
--- Theme collection + live toggling.
---
--- Browse/preview with <leader>ut (Snacks colorscheme picker, live preview).
--- Your choice is remembered across restarts.
---
--- To add a theme: drop another spec in the list below, then run :Lazy sync.
--- The string you pass to :colorscheme is shown in parentheses.
+-- Themes. <leader>ut opens a picker with live preview, and the pick sticks across restarts.
+-- To add one, add a spec at the bottom and run :Lazy sync.
+-- The comment after each spec lists its :colorscheme names.
 
 local persist_file = vim.fn.stdpath("data") .. "/colorscheme.txt"
 
@@ -17,13 +13,12 @@ local function read_colorscheme()
   if ok and lines and lines[1] and lines[1] ~= "" then
     return lines[1]
   end
-  return "catppuccin" -- default on first launch
+  return "catppuccin" -- first launch
 end
 
--- Remember whatever colorscheme ends up applied (the picker reverts on cancel,
--- so the final saved value matches what you actually selected). The `ready`
--- flag prevents transient startup/default schemes (e.g. habamax) from being
--- persisted before our saved theme has been applied.
+-- Save whatever theme ends up applied. The picker reverts on cancel, so the last
+-- save is the theme you picked. `ready` stops startup themes (like habamax) from
+-- being saved before ours loads.
 local ready = false
 vim.api.nvim_create_autocmd("ColorScheme", {
   group = vim.api.nvim_create_augroup("persist_colorscheme", { clear = true }),
@@ -34,7 +29,7 @@ vim.api.nvim_create_autocmd("ColorScheme", {
   end,
 })
 
--- Apply the saved colorscheme once all start plugins (themes) have loaded.
+-- Load the saved theme once all the theme plugins are in.
 vim.api.nvim_create_autocmd("User", {
   pattern = "VeryLazy",
   callback = function()
@@ -49,8 +44,8 @@ return {
     name = "catppuccin",
     priority = 1000,
     config = function()
-      -- Listed instead of auto-detected: detection calls vim.pack, which leaves an empty
-      -- site/pack/core folder that lazy.nvim's health check warns about.
+      -- Integrations listed by hand. Auto-detect calls vim.pack, which leaves an empty
+      -- site/pack/core dir that lazy's health check complains about.
       require("catppuccin").setup({
         auto_integrations = false,
         integrations = {
@@ -69,7 +64,7 @@ return {
     end,
   },
 
-  -- Additional themes for live toggling (<leader>ut). Add/remove freely.
+  -- More themes for <leader>ut.
   { "folke/tokyonight.nvim", lazy = false, priority = 1000 }, -- tokyonight, tokyonight-night/storm/moon/day
   { "rose-pine/neovim", name = "rose-pine", lazy = false, priority = 1000 }, -- rose-pine, rose-pine-moon/dawn
   { "ellisonleao/gruvbox.nvim", lazy = false, priority = 1000 }, -- gruvbox

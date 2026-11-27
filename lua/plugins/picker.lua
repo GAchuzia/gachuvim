@@ -1,8 +1,8 @@
--- Excluded once, by rg, so it never walks these directories at all.
+-- rg skips these dirs entirely.
 local ignore_globs = { "**/.git/*", "**/node_modules/*", "**/dist/*", "**/build/*", "**/vendor/*" }
 
--- Skip non-English translation and locale files. In large monorepos they are about half of
--- all files, and opening each file is most of rg's time. en.json and en.yml stay searchable.
+-- Skip non-English translation and locale files. They're about half the files in a big
+-- monorepo, and opening them is most of rg's time. en.json and en.yml still get searched.
 for _, dir in ipairs({ "translations", "locales" }) do
   for _, name in ipairs({ "[!e]*", "e[!n]*", "en?*" }) do
     for _, ext in ipairs({ "json", "yml" }) do
@@ -11,7 +11,7 @@ for _, dir in ipairs({ "translations", "locales" }) do
   end
 end
 
--- Neovim's default :grep uses rg -uu, which ignores .gitignore. Use the same filters instead.
+-- Default :grep runs rg -uu, which ignores .gitignore. Use the same filters as the picker.
 vim.o.grepprg = "rg --vimgrep --smart-case --hidden "
   .. table.concat(
     vim.tbl_map(function(glob)
@@ -20,7 +20,7 @@ vim.o.grepprg = "rg --vimgrep --smart-case --hidden "
     " "
   )
 
--- Nearest component, then zone, then repo. Grep here is much faster than across the monorepo.
+-- Closest dir with a component.yml, dev.yml or .git. Way faster to grep than the whole monorepo.
 local function component_root()
   return vim.fs.root(0, { "component.yml", "dev.yml", ".git" })
 end
@@ -63,7 +63,7 @@ return {
     opts = {
       picker = {
         sources = {
-          -- rg, not fd, so files and grep skip exactly the same paths.
+          -- rg for files too, so it skips the same paths as grep.
           files = { cmd = "rg", hidden = true, exclude = ignore_globs },
           grep = { hidden = true, exclude = ignore_globs },
           grep_word = { hidden = true, exclude = ignore_globs },

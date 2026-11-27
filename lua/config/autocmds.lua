@@ -29,7 +29,7 @@ vim.api.nvim_create_autocmd("LspAttach", {
     end
     map("gd", vim.lsp.buf.definition, "Go to definition")
     map("gD", vim.lsp.buf.declaration, "Go to declaration")
-    -- grr/gri replace Neovim's defaults. A bare gr would wait for grn, gra, and the rest.
+    -- grr/gri override Neovim's defaults. A plain gr map would wait for grn, gra, etc.
     map("grr", function()
       Snacks.picker.lsp_references()
     end, "Find references")
