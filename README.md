@@ -1,22 +1,21 @@
+<div align="center">
+
 # nvim-config
 
-> My Neovim setup
+My Neovim setup.
 
-## Requirements
+[![Neovim 0.12+](https://img.shields.io/badge/Neovim-0.12%2B-57A143?logo=neovim&logoColor=white)](https://neovim.io)
+[![Lint](https://github.com/GAchuzia/nvim-config/actions/workflows/lint.yml/badge.svg)](https://github.com/GAchuzia/nvim-config/actions/workflows/lint.yml)
 
-- Neovim 0.12 or later.
-- Git, ripgrep, the tree-sitter CLI, Node.js with npm, and a C compiler.
+</div>
 
 ## Install
 
-On macOS or Linux, back up any existing `~/.config/nvim` first.
+Needs Git, ripgrep, the tree-sitter CLI, Node.js and a C compiler.
 
 ```sh
 git clone https://github.com/GAchuzia/nvim-config.git ~/personal/nvim-config
-mkdir -p ~/.config
 ln -s ~/personal/nvim-config ~/.config/nvim
-nvim
 ```
----
 
-[GUIDE.md](GUIDE.md) lists the plugins, shortcuts, and dashboard layouts.
+Shortcuts are in [GUIDE.md](GUIDE.md).
